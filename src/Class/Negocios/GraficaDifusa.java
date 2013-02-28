@@ -61,5 +61,12 @@ public class GraficaDifusa {
         }
         listaConjuntos = temp;
     }
-
+    
+    public double[] gradosDPertenencia(double Xpoint){
+        double[] salida=new double[listaConjuntos.length];
+        for (int i = 0; i < salida.length; i++) {
+            salida[i]= listaConjuntos[i].getMembershipGrade(Xpoint);
+        }
+        return salida;
+    }
 }

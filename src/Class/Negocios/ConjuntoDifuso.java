@@ -91,7 +91,16 @@ public class ConjuntoDifuso {
     }
     
     public boolean equals(ConjuntoDifuso other){
-        return (new ConjuntoDifusoComparador().Equals(this, other));
+        return (Equals(this, other));
+    }
+    
+    private boolean Equals(ConjuntoDifuso x, ConjuntoDifuso y) {
+        return (x.getWidth() == y.getWidth()
+                && x.getAfterLastPoint() == y.getAfterLastPoint()
+                && x.getBeforeFirstPoint() == y.getBeforeFirstPoint()
+                && x.getFirstPoint() == y.getFirstPoint()
+                && x.getLastPoint() == y.getLastPoint()
+                && x.getType() == y.getType());
     }
 
     public double getWidth() {
