@@ -4,15 +4,12 @@
  */
 package Class.Negocios;
 
-import java.util.ArrayList;
-
 /**
  *
  * @author Kaloz
  */
 
 public class ConjuntoDifuso {
-    ArrayList h;
     private double width;
     private double firstPoint;
     private double beforeFirstPoint;
@@ -20,9 +17,16 @@ public class ConjuntoDifuso {
     private double afterLastPoint;
     private double lastPoint;
     private int type;
-    private final int TRIANGLE = 0, TRAPEZOIDAL = 1, GAUSSIAN = 2;
+    public final static int TRIANGLE = 0, TRAPEZOIDAL = 1, GAUSSIAN = 2;
 
     public ConjuntoDifuso() {
+        this.width=0;
+        this.firstPoint=0;
+        this.beforeFirstPoint=0;
+        this.criticPoint=0;
+        this.afterLastPoint=0;
+        this.lastPoint=0;
+        this.type=-1;
     }
 
     public ConjuntoDifuso(double firstPoint, double criticPoint, double lastPoint) {
@@ -153,5 +157,9 @@ public class ConjuntoDifuso {
 
     public int getType() {
         return type;
+    }
+    
+    public void setType(int type) {
+        this.type = type;
     }
 }
