@@ -11,7 +11,6 @@ package Class.Negocios;
 public class Defuzzy {
 
     double[] resultadosInferencia;
-    double[] puntosGraph;
     int salida;
     GraficaDifusa grafica;
 
@@ -28,7 +27,6 @@ public class Defuzzy {
     public Defuzzy(GraficaDifusa grafica, double[] resultadosInferencia) {
         this.grafica = grafica;
         this.resultadosInferencia = resultadosInferencia;
-        this.puntosGraph = new double[resultadosInferencia.length * 5];
     }
 
     public int getSalida() {
@@ -102,7 +100,7 @@ public class Defuzzy {
                 salida = i;
             }
         }
-        return resultado;
+        return (resultado>0)?resultado:0;
     }
 
     public double centroideTrapecio(double x1, double x2, double limite1, double limite2, double y) {

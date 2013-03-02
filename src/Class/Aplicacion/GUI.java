@@ -4,6 +4,15 @@
  */
 package Class.Aplicacion;
 
+import Class.MainComplete;
+import Class.Negocios.ConjuntoDifuso;
+import Class.Negocios.Defuzzy;
+import Class.Negocios.GraficaDifusa;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 /**
  *
  * @author Kaloz
@@ -26,21 +35,246 @@ public class GUI extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel1 = new javax.swing.JPanel();
+        jpOdometro = new javax.swing.JPanel();
+        btnAcelerar = new javax.swing.JButton();
+        btnFrenar = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        jPanel1.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jpOdometro.setBorder(javax.swing.BorderFactory.createEtchedBorder());
+
+        javax.swing.GroupLayout jpOdometroLayout = new javax.swing.GroupLayout(jpOdometro);
+        jpOdometro.setLayout(jpOdometroLayout);
+        jpOdometroLayout.setHorizontalGroup(
+            jpOdometroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 143, Short.MAX_VALUE)
+        );
+        jpOdometroLayout.setVerticalGroup(
+            jpOdometroLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 84, Short.MAX_VALUE)
+        );
+
+        btnAcelerar.setText("Acelerar");
+        btnAcelerar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnAcelerarMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnAcelerarMouseReleased(evt);
+            }
+        });
+
+        btnFrenar.setText("Frenar");
+        btnFrenar.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                btnFrenarMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                btnFrenarMouseReleased(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addComponent(jpOdometro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(47, 47, 47)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(btnFrenar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(btnAcelerar, javax.swing.GroupLayout.DEFAULT_SIZE, 126, Short.MAX_VALUE))
+                .addContainerGap(28, Short.MAX_VALUE))
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(btnAcelerar, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnFrenar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jpOdometro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(161, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    Thread acelerar;
+    Thread frenar;
+    Thread desacelerar;
+    Thread tiempo;
+    double tiempoSeg;
+
+    private void correTiempo() {
+        tiempo = new Thread() {
+            @Override
+            public void run() {
+                while (true) {
+                    tiempoSeg += .1;
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MainComplete.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        tiempo.start();
+    }
+
+    private void acelera() {
+        acelerar = new Thread() {
+            @Override
+            public void run() {
+                double[] gradosDePertenencia = null;
+                double temp_tiempo = tiempoSeg;
+
+                // se declaran la grafica con sus 7 conjuntos de la entrada de segundos para la aceleracion
+                GraficaDifusa entradaSegAcelerar =
+                        new GraficaDifusa(
+                        new ConjuntoDifuso[]{
+                            new ConjuntoDifuso(0, 2, 7.7),
+                            new ConjuntoDifuso(1.4, 6.4, 10.5),
+                            new ConjuntoDifuso(4.2, 9.2, 14),
+                            new ConjuntoDifuso(9, 13.3, 19.2),
+                            new ConjuntoDifuso(16.6, 20, 21.8),
+                            new ConjuntoDifuso(20.5, 24, 27),
+                            new ConjuntoDifuso(27, 28, 30)
+                        });
+                // se declara la grafica de la salida en km de la aceleracion
+                GraficaDifusa salidaKmAcelerar =
+                        new GraficaDifusa(
+                        new ConjuntoDifuso[]{
+                            new ConjuntoDifuso(0, 5.5, 30),
+                            new ConjuntoDifuso(10, 36, 75),
+                            new ConjuntoDifuso(30, 50, 70),
+                            new ConjuntoDifuso(65, 90, 120),
+                            new ConjuntoDifuso(110, 120, 130),
+                            new ConjuntoDifuso(125, 139.5, 150),
+                            new ConjuntoDifuso(140, 158, 160)
+                        });
+                Defuzzy defuzyficacion = new Defuzzy(salidaKmAcelerar, gradosDePertenencia);
+                Graphics pintar = jpOdometro.getGraphics();
+
+                while (tiempoSeg > 0) {
+                    if (tiempoSeg != temp_tiempo) {
+                        gradosDePertenencia = entradaSegAcelerar.getGradosDPertenencia(tiempoSeg);
+                        defuzyficacion.setResultadosInferencia(gradosDePertenencia);
+
+                        pintar.setColor(Color.WHITE);
+                        pintar.fillRect(0, 0, jpOdometro.getWidth(), jpOdometro.getHeight());
+                        pintar.setColor(Color.BLACK);
+                        pintar.drawString("" + ((((int) defuzyficacion.desfuzificar()) == 0) ? "150" : ((int) defuzyficacion.desfuzificar())) + "Km/h", (jpOdometro.getWidth() / 2) - 20, jpOdometro.getHeight() / 2);
+                        temp_tiempo = tiempoSeg;
+                    }
+                }
+                pintar.fillRect(0, 0, jpOdometro.getWidth(), jpOdometro.getHeight());
+                pintar.drawString("0 Km/h", (jpOdometro.getWidth() / 2) - 20, jpOdometro.getHeight() / 2);
+            }
+        };
+        acelerar.start();
+    }
+
+    private void reiniciaTiempo() {
+        tiempo.stop();
+        tiempo = null;
+    }
+
+    private void detieneAcelerar() {
+        acelerar.stop();
+        acelerar = null;
+    }
+
+    private void desacelerar() {
+        acelera();
+    }
+
+    private void regresaTiempo() {
+        tiempo = new Thread() {
+            @Override
+            public void run() {
+                while (tiempoSeg > 0) {
+                    tiempoSeg -= .1;
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MainComplete.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        tiempo.start();
+    }
+
+    private void regresaTiempoAgresivo() {
+        tiempo = new Thread() {
+            @Override
+            public void run() {
+                while (tiempoSeg > 0) {
+                    tiempoSeg -= .4;
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException ex) {
+                        Logger.getLogger(MainComplete.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+            }
+        };
+        tiempo.start();
+    }
+
+    private void frenar() {
+        acelera();
+    }
+
+    private void btnAcelerarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAcelerarMouseReleased
+        reiniciaTiempo();
+        detieneAcelerar();
+        regresaTiempo();
+        desacelerar();
+    }//GEN-LAST:event_btnAcelerarMouseReleased
+
+    private void btnAcelerarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAcelerarMousePressed
+        correTiempo();
+        acelera();
+    }//GEN-LAST:event_btnAcelerarMousePressed
+
+    private void btnFrenarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFrenarMousePressed
+        reiniciaTiempo();
+        detieneAcelerar();
+        regresaTiempoAgresivo();
+        frenar();
+    }//GEN-LAST:event_btnFrenarMousePressed
+
+    private void btnFrenarMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnFrenarMouseReleased
+        reiniciaTiempo();
+        detieneAcelerar();
+        regresaTiempo();
+        desacelerar();
+    }//GEN-LAST:event_btnFrenarMouseReleased
 
     /**
      * @param args the command line arguments
@@ -77,5 +311,9 @@ public class GUI extends javax.swing.JFrame {
         });
     }
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAcelerar;
+    private javax.swing.JButton btnFrenar;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jpOdometro;
     // End of variables declaration//GEN-END:variables
 }
