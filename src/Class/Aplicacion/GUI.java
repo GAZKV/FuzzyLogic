@@ -100,7 +100,7 @@ public class GUI extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnFrenar, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jpOdometro, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(161, Short.MAX_VALUE))
+                .addContainerGap(55, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -116,8 +116,8 @@ public class GUI extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -199,12 +199,16 @@ public class GUI extends javax.swing.JFrame {
     }
 
     private void reiniciaTiempo() {
-        tiempo.stop();
+        if(tiempo!=null) {
+            tiempo.stop();
+        }
         tiempo = null;
     }
 
     private void detieneAcelerar() {
-        acelerar.stop();
+        if(acelerar!=null) {
+            acelerar.stop();
+        }
         acelerar = null;
     }
 
@@ -224,6 +228,7 @@ public class GUI extends javax.swing.JFrame {
                         Logger.getLogger(MainComplete.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                tiempoSeg=0;
             }
         };
         tiempo.start();
@@ -241,6 +246,7 @@ public class GUI extends javax.swing.JFrame {
                         Logger.getLogger(MainComplete.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
+                tiempoSeg=0;
             }
         };
         tiempo.start();
@@ -258,6 +264,8 @@ public class GUI extends javax.swing.JFrame {
     }//GEN-LAST:event_btnAcelerarMouseReleased
 
     private void btnAcelerarMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnAcelerarMousePressed
+        reiniciaTiempo();
+        detieneAcelerar();
         correTiempo();
         acelera();
     }//GEN-LAST:event_btnAcelerarMousePressed

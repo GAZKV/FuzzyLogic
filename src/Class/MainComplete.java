@@ -4,6 +4,7 @@
  */
 package Class;
 
+import Class.Aplicacion.GUI;
 import Class.Negocios.ConjuntoDifuso;
 import Class.Negocios.Defuzzy;
 import Class.Negocios.GraficaDifusa;
@@ -74,20 +75,7 @@ public class MainComplete {
     }
 
     public static void main(String[] args) {
-        iniciaHilo();
-//        ConjuntoDifuso[] lista = new ConjuntoDifuso[]{
-//            new ConjuntoDifuso(0, 4, 7.7),
-//            new ConjuntoDifuso(1.4, 6.4, 10.5),
-//            new ConjuntoDifuso(4.2, 9.2, 14),
-//            new ConjuntoDifuso(9, 13.3, 19.2),
-//            new ConjuntoDifuso(16.6, 20, 21.8),
-//            new ConjuntoDifuso(20.5, 24, 27),
-//            new ConjuntoDifuso(27, 28, 29.6)
-//        };
-//        GraficaDifusa obj = new GraficaDifusa(lista);
-//        double[] gradosDePertenencia = obj.getGradosDPertenencia(0);
-//        for (int i = 0; i < gradosDePertenencia.length; i++) {
-//            System.out.print(gradosDePertenencia[i] + ", ");
-//        }
+        //iniciaHilo();
+        new GUI().setVisible(true);
     }
 }
